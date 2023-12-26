@@ -27,6 +27,28 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/main_pc_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="Name" />
+
+            <EditText
+                android:id="@+id/main_pc_ip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="Ip" />
+        </LinearLayout>
+
         <Button
             android:id="@+id/scan_button"
             android:layout_width="match_parent"
@@ -40,32 +62,22 @@
             android:text="send message" />
 
         <Button
-            android:id="@+id/add_pc"
+            android:id="@+id/add_update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="add" />
+            android:text="add/update" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/send_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="send text" />
 
-        <EditText
-            android:id="@+id/main_pc_name"
+        <TextView
+            android:id="@+id/showText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:text="Name" />
-
-        <EditText
-            android:id="@+id/main_pc_ip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:text="Name" />
+            android:layout_height="156dp"
+            android:text="TextView" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

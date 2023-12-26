@@ -11,11 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ar.com.android.drop.domine.ListPcAdapter
 import ar.com.android.drop.domine.Pc
+import ar.com.android.drop.listeners.AddUpdateListener
 import ar.com.android.drop.listeners.OnPcClickListener
 import ar.com.android.drop.scanner.Scanner
 import ar.com.android.drop.services.IpService
 import ar.com.android.drop.services.PcService
 import ar.com.android.drop.services.SendService
+import ar.com.android.drop.threads.ReceiveMessage
 import java.util.Stack
 
 
@@ -56,22 +58,24 @@ class MainActivity : AppCompatActivity() {
         listView.layoutManager = LinearLayoutManager(this)
         listView.setHasFixedSize(true)
 
-        pcName = findViewById(R.id.main_pc_name)
-        pcIp = findViewById(R.id.main_pc_ip)
+        pcName = findViewById(R.id.main_pc_ip)
+        pcIp = findViewById(R.id.main_pc_name)
         mListPcAdapter = ListPcAdapter(this, mOnPcClickListener)
         listView.adapter = mListPcAdapter
         mListPcAdapter.addPc(Pc("192.168.0.2","martin"))
         // we will be adding adapter here later
 
-        addPc = findViewById(R.id.add_pc)
+        val receiveMessage = ReceiveMessage()
+        receiveMessage.start()
+
+        addPc = findViewById(R.id.add_update)
+        //addPc.setOnClickListener { AddUpdateListener(this) }
         addPc.setOnClickListener {
 
             val name = pcName.text.toString()
             val ip = pcIp.text.toString()
 
-            if (!name.isBlank() && !ip.isBlank()) {
-
-
+            if (!name.isBlank() && !ip.isBlank() && !name.equals("Name") && !pcIp.equals("Ip")) {
                 // prepare model for use
                 val model = Pc(name, ip)
 
@@ -79,14 +83,10 @@ class MainActivity : AppCompatActivity() {
                 mListPcAdapter.addPc(model)
 
                 // reset the input
-                pcName.setText("")
-                pcIp.setText("")
+                pcName.setText("Name")
+                pcIp.setText("Ip")
             }
         }
-
-
-
-
 
     }
 

@@ -16,6 +16,7 @@ import ar.com.android.drop.exceptions.ReceiveThroughtServletException;
 import ar.com.android.drop.services.FileService;
 import ar.com.android.drop.services.SendService;
 import ar.com.android.drop.services.PcService;
+import android.util.Log;
 
 public class ReceiveMessage extends Thread {
 
@@ -37,6 +38,8 @@ public class ReceiveMessage extends Thread {
 
 	public void run() {
 
+		Log.i("InfoTag","estoy en el run the ReceiveMessage");
+
 		while (true) {
 			ServerSocket socket = null;
 
@@ -54,6 +57,7 @@ public class ReceiveMessage extends Thread {
 				String ipOtroCliente = cliente.getInetAddress()
 						.getHostAddress();
 				System.out.println("Connected with " + ipOtroCliente);
+				Log.d("InfoTag","cliente: "+cliente.getInetAddress());
 
 				cliente.setSoLinger(true, 10);
 
@@ -173,7 +177,11 @@ public class ReceiveMessage extends Thread {
 
 				String error = "Error whit serversocket: "
 						+ PORT;
-				System.out.println(error);
+				Log.d("InfoTag","error log:"+error);
+				Log.d("InfoTag","stackTrace log:"+e.getMessage());
+				e.printStackTrace();
+				System.exit(0);
+
 
 			} finally {
 
