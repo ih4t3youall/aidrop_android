@@ -7,30 +7,14 @@ import ar.com.android.drop.domine.Pc;
 import ar.com.android.drop.exceptions.FileNotExist;
 import ar.com.android.drop.persistence.Persistence;
 
-public class PcService implements Serializable{
+public class PcService {
 
 	private Pc pcLocal = new Pc("0");
 	private LinkedList<Pc> externalPc = new LinkedList<Pc>();
 
 	
-	public PcService(){
-		Persistence persistence = new Persistence();
-		//se fija si hay configuraciones y las carga
-		
-			try {
-				persistence.loadRecord(this);
-			} catch (FileNotExist e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-			}
-		
-	}
-	
-	
 	public void setExternalPc(LinkedList<Pc> externalPc){
-		
 		this.externalPc = externalPc;
-		
 	}
 	
 	

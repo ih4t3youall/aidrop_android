@@ -7,8 +7,8 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="729dp"
+        android:layout_width="350dp"
+        android:layout_height="629dp"
         android:layout_marginStart="1dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="1dp"
@@ -22,8 +22,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
-            android:minHeight="300dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:minHeight="200dp">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -56,10 +56,10 @@
             android:text="Scan" />
 
         <Button
-            android:id="@+id/message_button"
+            android:id="@+id/edit_local"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="send message" />
+            android:text="Edit Local Pc" />
 
         <Button
             android:id="@+id/add_update"
@@ -76,8 +76,16 @@
         <TextView
             android:id="@+id/showText"
             android:layout_width="match_parent"
-            android:layout_height="156dp"
+            android:layout_height="wrap_content"
             android:text="TextView" />
+
+        <EditText
+            android:id="@+id/result_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            tools:text="EditText" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

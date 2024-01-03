@@ -1,23 +1,25 @@
 package ar.com.android.drop
 
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
-import android.os.StrictMode
-import android.os.StrictMode.ThreadPolicy
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ar.com.android.drop.devHelpers.ScreenLog
 import ar.com.android.drop.domine.ListPcAdapter
+import ar.com.android.drop.domine.Message
 import ar.com.android.drop.domine.Pc
 import ar.com.android.drop.listeners.AddUpdateListener
 import ar.com.android.drop.listeners.OnPcClickListener
-import ar.com.android.drop.scanner.Scanner
+import ar.com.android.drop.listeners.SendMessageListener
 import ar.com.android.drop.services.IpService
 import ar.com.android.drop.services.PcService
 import ar.com.android.drop.services.SendService
 import ar.com.android.drop.threads.ReceiveMessage
+import com.google.gson.Gson
 import java.util.Stack
 
 
@@ -29,14 +31,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mListPcAdapter: ListPcAdapter
     private var modelToBeUpdated: Stack<Pc> = Stack()
     private lateinit var addPc: Button
+    private lateinit var sendMessage: Button
+    private lateinit var ipService :IpService
+    lateinit var myPc:Pc
+    lateinit var screenlog: ScreenLog
+    lateinit var receiveMessage:ReceiveMessage
+    lateinit var pcService:PcService
 
 
     private val mOnPcClickListener = object : OnPcClickListener {
         override fun onUpdate(position: Int, model: Pc) {
-
             // we want to update
             modelToBeUpdated.add(model)
-
             // set the value of the clicked item in the edit text
             pcName.setText(model.pcName)
             pcIp.setText(model.ip)
@@ -50,7 +56,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        screenlog = ScreenLog(findViewById<TextView>(R.id.showText))
+        pcService = PcService()
+        ipService = IpService(this, screenlog, pcService)
+        val sendService = SendService()
+        ipService.start()
         //val listView = findViewById<RecyclerView>(R.id.list_view)
 
         // initialize the recycler view
@@ -58,51 +68,57 @@ class MainActivity : AppCompatActivity() {
         listView.layoutManager = LinearLayoutManager(this)
         listView.setHasFixedSize(true)
 
-        pcName = findViewById(R.id.main_pc_ip)
-        pcIp = findViewById(R.id.main_pc_name)
+        pcName = findViewById(R.id.main_pc_name)
+        pcIp = findViewById(R.id.main_pc_ip)
+        val receivedTextField:EditText = findViewById(R.id.result_text_view)
         mListPcAdapter = ListPcAdapter(this, mOnPcClickListener)
         listView.adapter = mListPcAdapter
-        mListPcAdapter.addPc(Pc("192.168.0.2","martin"))
-        // we will be adding adapter here later
+        receiveMessage = ReceiveMessage(sendService, screenlog, pcService, mListPcAdapter, receivedTextField)
 
-        val receiveMessage = ReceiveMessage()
-        receiveMessage.start()
+        //inicia el servidor de recepcion de mensajes
+        initServer()
 
         addPc = findViewById(R.id.add_update)
-        //addPc.setOnClickListener { AddUpdateListener(this) }
-        addPc.setOnClickListener {
+        addPc.setOnClickListener(AddUpdateListener(this, pcName, pcIp, mListPcAdapter))
 
-            val name = pcName.text.toString()
-            val ip = pcIp.text.toString()
-
-            if (!name.isBlank() && !ip.isBlank() && !name.equals("Name") && !pcIp.equals("Ip")) {
-                // prepare model for use
-                val model = Pc(name, ip)
-
-                // add model to the adapter
-                mListPcAdapter.addPc(model)
-
-                // reset the input
-                pcName.setText("Name")
-                pcIp.setText("Ip")
+        //listeners
+        findViewById<Button>(R.id.send_text).setOnClickListener {
+            val intent = Intent(this, SendActivity::class.java).apply {
+                val message = Message(pcService.pcLocal,"mensajePrompt",mListPcAdapter.getSelected().ip,null,null)
+                putExtra("localPc", Gson().toJson(pcService.pcLocal))
+                putExtra("command", "mensajePrompt")
+                putExtra("targetIp", mListPcAdapter.getSelected().ip)
             }
+            startActivity(intent)
         }
 
+
+
+
+
+        findViewById<Button>(R.id.edit_local).setOnClickListener {
+            screenlog.addText("martin")
+            screenlog.addText("y")
+            screenlog.addText("meke")
+        }
     }
 
-   private fun scanerr(){
-       val buttonClick = findViewById<Button>(R.id.scan_button)
-       buttonClick.setOnClickListener {
-           val pcService = PcService()
-           val sendService = SendService()
-           val ipService = IpService()
-           if (Build.VERSION.SDK_INT > 9) {
-               val policy = ThreadPolicy.Builder().permitAll().build()
-               StrictMode.setThreadPolicy(policy)
-               val pc = ipService.localIp
-               pcService.pcLocal=pc
-           }
-           Scanner(pcService, sendService).startScanning()
-       }
-   }
+    fun initServer(){
+        receiveMessage.start()
+    }
+   //private fun scanerr(){
+   //    val buttonClick = findViewById<Button>(R.id.scan_button)
+   //    buttonClick.setOnClickListener {
+   //        val pcService = PcService()
+   //        val sendService = SendService()
+   //        val ipService = IpService()
+   //        if (Build.VERSION.SDK_INT > 9) {
+   //            val policy = ThreadPolicy.Builder().permitAll().build()
+   //            StrictMode.setThreadPolicy(policy)
+   //            val pc = ipService.localIp
+   //            pcService.pcLocal=pc
+   //        }
+   //        Scanner(pcService, sendService).startScanning()
+   //    }
+   //}
 }

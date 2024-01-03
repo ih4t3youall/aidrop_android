@@ -3,9 +3,20 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+
+
 android {
     namespace = "ar.com.android.drop"
     compileSdk = 34
+    packaging {
+        resources.excludes.addAll(
+            listOf(
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md",
+                "META-INF/INDEX.LIST"
+            )
+        )
+    }
 
     defaultConfig {
         applicationId = "ar.com.android.drop"
@@ -35,6 +46,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
@@ -44,4 +56,8 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    // Dependency on local binaries
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    // Dependency on a remote binary
+    implementation("ar.com.commons:send:1.2.2")
 }

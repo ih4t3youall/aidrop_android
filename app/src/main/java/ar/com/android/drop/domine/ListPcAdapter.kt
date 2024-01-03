@@ -16,6 +16,8 @@ class ListPcAdapter(private val mContext: Context,
                     private val mPcList: ArrayList<Pc> = ArrayList()
 ) : RecyclerView.Adapter<ListPcAdapter.PcViewHolder>() {
 
+    var selectedPc : Pc? = null
+
     /**
      * ViewHolder implementation for holding the mapped views.
      */
@@ -75,15 +77,14 @@ class ListPcAdapter(private val mContext: Context,
 
     override fun onBindViewHolder(holder: PcViewHolder, position: Int) {
         // data will be set here whenever the system thinks it's required
-
-        // get the product at position
         val pc = mPcList[position]
-        Log.i("InfoTag","mPcList[$position]: ${pc.pcName}, ${pc.ip}")
-
-        for (pc in mPcList)
-            Log.i("InfoTag", "pcList: ${pc.pcName}")
+        selectedPc = pc
         holder.pcName.text = pc.pcName
-        holder.pcIp.text = "${pc.ip}"
+        holder.pcIp.text = pc.ip
+    }
+
+    fun getSelected():Pc{
+        return selectedPc!!
     }
 
 }
